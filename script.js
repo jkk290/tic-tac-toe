@@ -1,7 +1,22 @@
-function Gameboard() {
+const Gameboard = (function() {
     const rows = 3;
     const columns = 3;
     const board = [];
+
+    function Cell() {
+      let value = 0;
+    
+      const addMark = (player) => {
+        value = player;
+      };  
+  
+      const getValue = () => value;
+    
+      return {
+        addMark,
+        getValue
+      };
+    }    
   
     for (let i = 0; i < rows; i++) {
       board[i] = [];
@@ -10,7 +25,9 @@ function Gameboard() {
       }
     }
   
-    const getBoard = () => board;
+    const getBoard = () => {
+      return board;
+    };
   
     const placeMark = (row, column, player) => {
       const cell = board[row][column];
@@ -31,30 +48,10 @@ function Gameboard() {
     };
   
     return { getBoard, placeMark, printBoard };
-  }
-  
-  
-  function Cell() {
-    let value = 0;
-  
-    const addMark = (player) => {
-      value = player;
-    };  
+  })();
 
-    const getValue = () => value;
   
-    return {
-      addMark,
-      getValue
-    };
-  }
-  
-  
-  function GameController(
-    playerOneName = "Player One",
-    playerTwoName = "Player Two"
-  ) {
-    const board = Gameboard();
+  const game = (function(playerOneName = "Player One", playerTwoName = "Player Two") {
   
     const players = [
       {
@@ -76,40 +73,8 @@ function Gameboard() {
     const getActivePlayer = () => activePlayer;
   
     const printNewRound = () => {
-      board.printBoard();
+      Gameboard.printBoard();
       console.log(`${getActivePlayer().name}'s turn.`);
-    };
-  
-    const playRound = (row, column) => {
-      const currentPlayerMark = getActivePlayer().mark;
-
-      console.log(
-        `Placing ${getActivePlayer().name}'s mark into position row: ${row} column: ${column}...`
-      );
-
-      const wasMoveInvalid = board.placeMark(row, column, currentPlayerMark);
-
-      if (wasMoveInvalid) {
-        console.log("Invalid move! Try again.");
-        printNewRound();
-        return;
-      };
-
-      if (checkWin(board.getBoard(), currentPlayerMark)) {
-        board.printBoard();
-        console.log(`${getActivePlayer().name} wins on round ${currentRound}!`);
-        return;
-      };
-
-      if (currentRound === 9) {
-        board.printBoard();
-        console.log("It's a draw!");
-        return;
-      };    
-
-      currentRound++;
-      switchPlayerTurn();
-      printNewRound();
     };
 
     function checkRows(board, playerMark) {
@@ -163,14 +128,43 @@ function Gameboard() {
       } else {
         return false;
       }
-    }
+    };
+  
+    const playRound = (row, column) => {
+      const currentPlayerMark = getActivePlayer().mark;
+
+      console.log(
+        `Placing ${getActivePlayer().name}'s mark into position row: ${row} column: ${column}...`
+      );
+
+      const wasMoveInvalid = Gameboard.placeMark(row, column, currentPlayerMark);
+
+      if (wasMoveInvalid) {
+        console.log("Invalid move! Try again.");
+        printNewRound();
+        return;
+      };
+
+      if (checkWin(Gameboard.getBoard(), currentPlayerMark)) {
+        Gameboard.printBoard();
+        console.log(`${getActivePlayer().name} wins on round ${currentRound}!`);
+        return;
+      };
+
+      if (currentRound === 9) {
+        Gameboard.printBoard();
+        console.log("It's a draw!");
+        return;
+      };    
+
+      currentRound++;
+      switchPlayerTurn();
+      printNewRound();
+    };
   
     printNewRound();
   
     return {
-      playRound,
-      getActivePlayer
+      playRound
     };
-  }
-  
-  const game = GameController();
+  })();

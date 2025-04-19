@@ -67,8 +67,9 @@ function Gameboard() {
       }
     ];
   
-    let activePlayer = players[0];
-  
+    let activePlayer = players[0];    
+    let currentRound = 1;
+    
     const switchPlayerTurn = () => {
       activePlayer = activePlayer === players[0] ? players[1] : players[0];
     };
@@ -80,18 +81,89 @@ function Gameboard() {
     };
   
     const playRound = (row, column) => {
-      
+      const currentPlayerMark = getActivePlayer().mark;
+
       console.log(
         `Placing ${getActivePlayer().name}'s mark into position row: ${row} column: ${column}...`
       );
 
-      const wasMoveInvalid = board.placeMark(row, column, getActivePlayer().mark);
+      const wasMoveInvalid = board.placeMark(row, column, currentPlayerMark);
 
-      
-      if (!wasMoveInvalid) switchPlayerTurn();
+      if (wasMoveInvalid) {
+        console.log("Invalid move! Try again.");
+        printNewRound();
+        return;
+      };
 
+      if (checkWin(board.getBoard(), currentPlayerMark)) {
+        board.printBoard();
+        console.log(`${getActivePlayer().name} wins on round ${currentRound}!`);
+        return;
+      };
+
+      if (currentRound === 9) {
+        board.printBoard();
+        console.log("It's a draw!");
+        return;
+      };    
+
+      currentRound++;
+      switchPlayerTurn();
       printNewRound();
     };
+
+    function checkRows(board, playerMark) {
+      for (let i = 0; i < 3; i++) {
+        if (
+          board[i][0].getValue() === playerMark &&
+          board[i][1].getValue() === playerMark &&
+          board[i][2].getValue() === playerMark
+        ) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    function checkColumns(board, playerMark) {
+      for (let j = 0; j < 3; j++) {
+        if (
+          board[0][j].getValue() === playerMark &&
+          board[1][j].getValue() === playerMark &&
+          board[2][j].getValue() === playerMark
+        ) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    function checkDiagonals(board, playerMark) {
+      if ((
+        board[0][0].getValue() === playerMark && 
+        board[1][1].getValue() === playerMark && 
+        board[2][2].getValue() === playerMark
+      ) || (
+        board[0][2].getValue() === playerMark &&
+        board[1][1].getValue() === playerMark &&
+        board[2][0].getValue() === playerMark 
+      )){
+        return true;
+      }
+      return false;
+    };
+
+    function checkWin(board, playerMark) {
+      if (
+        checkRows(board, playerMark) || 
+        checkColumns(board, playerMark) ||
+        checkDiagonals(board, playerMark)
+      ) {        
+        return true;
+      } else {
+        return false;
+      }
+    }
   
     printNewRound();
   

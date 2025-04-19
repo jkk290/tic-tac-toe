@@ -12,11 +12,11 @@ function Gameboard() {
   
     const getBoard = () => board;
   
-    const placeMark = (row,column, player) => {
+    const placeMark = (row, column, player) => {
+      const availableCell = board[row][column].getValue() === 0;
 
-    //   const availableCells = board.filter((row) => row[column].getValue() === 0).map(row => row[column]);
-    //   if (!availableCells.length) return;
-  
+      if (!availableCell) return;
+      
       board[row][column].addMark(player);
     };
 
@@ -81,7 +81,7 @@ function Gameboard() {
       );
       board.placeMark(row, column, getActivePlayer().mark);
 
-      switchPlayerTurn();
+      if (!dontSkip) switchPlayerTurn();
       printNewRound();
     };
   

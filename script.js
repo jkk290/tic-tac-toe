@@ -13,11 +13,16 @@ function Gameboard() {
     const getBoard = () => board;
   
     const placeMark = (row, column, player) => {
+      const cell = board[row][column];
       const availableCell = board[row][column].getValue() === 0;
 
-      if (!availableCell) return;
-      
-      board[row][column].addMark(player);
+      if (!availableCell) {
+        console.log(`Position ${row}, ${column} is already taken`);
+        return true;
+      }
+
+      cell.addMark(player);
+      return false;
     };
 
     const printBoard = () => {
@@ -79,9 +84,12 @@ function Gameboard() {
       console.log(
         `Placing ${getActivePlayer().name}'s mark into position row: ${row} column: ${column}...`
       );
-      board.placeMark(row, column, getActivePlayer().mark);
 
-      if (!dontSkip) switchPlayerTurn();
+      const wasMoveInvalid = board.placeMark(row, column, getActivePlayer().mark);
+
+      
+      if (!wasMoveInvalid) switchPlayerTurn();
+
       printNewRound();
     };
   

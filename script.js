@@ -163,3 +163,37 @@ const Gameboard = (function() {
     };
   })();
 
+const Display = (function() {
+  let gameContainer = document.querySelector('.game-container');
+  let messageContainer = document.querySelector('.message-container');
+  let cellElements = [];
+
+  const displayBoard = () => {
+    const boardState = Gameboard.getBoard();
+  }
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+
+      const cellIndex = i * 3 + j;
+
+      const cellValue = boardState[i][j].getValue();
+
+      const cellElement = cellElements[cellIndex];
+
+      if (cellElement) {
+        if (cellValue === 1) {
+          cellElement.textContent = 'X';
+        } else if (cellValue === 2) {
+          cellElement.textContent = 'O';
+        } else {
+          cellElement.textContent = '';
+        }
+
+        
+      }
+    }
+  }
+
+})();
+

@@ -164,36 +164,84 @@ const Gameboard = (function() {
   })();
 
 const Display = (function() {
-  let gameContainer = document.querySelector('.game-container');
-  let messageContainer = document.querySelector('.message-container');
-  let cellElements = [];
+  const gameContainer = document.querySelector('#game-container');
+  const messageContainer = document.querySelector('#message-container');
+  const boardDiv = document.querySelector('#board');
 
-  const displayBoard = () => {
-    const boardState = Gameboard.getBoard();
-  }
+  const updateDisplay = () => {
 
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
+    boardDiv.textContent = "";
 
-      const cellIndex = i * 3 + j;
+    const board = Gameboard.getBoard();
+    const currentPlayer = game.getActivePlayer().name;
 
-      const cellValue = boardState[i][j].getValue();
+    messageContainer.textContent = `${currentPlayer}'s turn...`
 
-      const cellElement = cellElements[cellIndex];
-
-      if (cellElement) {
-        if (cellValue === 1) {
-          cellElement.textContent = 'X';
-        } else if (cellValue === 2) {
-          cellElement.textContent = 'O';
+    board.forEach((row, rowIndex) => {
+      row.forEach((cell, columnIndex) => {
+        const cellButton = document.createElement('button');
+        cellButton.classList.add("cell");
+        cellButton.dataset.row = rowIndex;
+        cellButton.dataset.column = columnIndex;
+        if (cell.getValue() === 1) {
+          cellButton.textContent = 'X';
+          boardDiv.appendChild(cellButton);
+        } else if (cell.getValue() === 2) {
+          cellButton.textContent = 'O';
+          boardDiv.appendChild(cellButton);
         } else {
-          cellElement.textContent = '';
+          cellButton.textContent = '';
+          boardDiv.appendChild(cellButton);
         }
+      })
+    })
+  };
+
+  // function clickHandlerBoard(e) {
+  //   const selectedPosition = e.target.dataset.column;
+
+  //   if (!selectedPosition) return;
+
+
+  // };
+
+  updateDisplay();
+
+
+
+
+
+
+
+
+  // let cellElements = [];
+
+  // const displayBoard = () => {
+  //   const boardState = Gameboard.getBoard();
+  // }
+
+  // for (let i = 0; i < 3; i++) {
+  //   for (let j = 0; j < 3; j++) {
+
+  //     const cellIndex = i * 3 + j;
+
+  //     const cellValue = boardState[i][j].getValue();
+
+  //     const cellElement = cellElements[cellIndex];
+
+  //     if (cellElement) {
+  //       if (cellValue === 1) {
+  //         cellElement.textContent = 'X';
+  //       } else if (cellValue === 2) {
+  //         cellElement.textContent = 'O';
+  //       } else {
+  //         cellElement.textContent = '';
+  //       }
 
         
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
 
 })();
 

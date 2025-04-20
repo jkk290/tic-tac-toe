@@ -70,12 +70,8 @@ const Gameboard = (function() {
     const switchPlayerTurn = () => {
       activePlayer = activePlayer === players[0] ? players[1] : players[0];
     };
+
     const getActivePlayer = () => activePlayer;
-  
-    const printNewRound = () => {
-      Gameboard.printBoard();
-      console.log(`${getActivePlayer().name}'s turn.`);
-    };
 
     function checkRows(board, playerMark) {
       for (let i = 0; i < 3; i++) {
@@ -141,30 +137,29 @@ const Gameboard = (function() {
 
       if (wasMoveInvalid) {
         console.log("Invalid move! Try again.");
-        printNewRound();
-        return;
+        return { status: 'invalid' };
       };
 
       if (checkWin(Gameboard.getBoard(), currentPlayerMark)) {
         Gameboard.printBoard();
         console.log(`${getActivePlayer().name} wins on round ${currentRound}!`);
-        return;
+        return { status: 'win', winner: getActivePlayer() };
       };
 
       if (currentRound === 9) {
         Gameboard.printBoard();
         console.log("It's a draw!");
-        return;
+        return { status: 'draw'};
       };    
 
       currentRound++;
       switchPlayerTurn();
-      printNewRound();
+      return { status: 'continue' };
     };
-  
-    printNewRound();
   
     return {
-      playRound
+      playRound,
+      getActivePlayer
     };
   })();
+

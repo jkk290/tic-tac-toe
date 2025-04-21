@@ -167,6 +167,8 @@ const Display = (function() {
   const gameContainer = document.querySelector('#game-container');
   const messageContainer = document.querySelector('#message-container');
   const boardDiv = document.querySelector('#board');
+  let gameOver = false;
+  
 
   const updateDisplay = () => {
 
@@ -175,7 +177,9 @@ const Display = (function() {
     const board = Gameboard.getBoard();
     const currentPlayer = game.getActivePlayer().name;
 
-    messageContainer.textContent = `${currentPlayer}'s turn...`
+    if (gameOver === false) {
+      messageContainer.textContent = `${currentPlayer}'s turn...`
+    };
 
     board.forEach((row, rowIndex) => {
       row.forEach((cell, columnIndex) => {
@@ -197,51 +201,46 @@ const Display = (function() {
     })
   };
 
-  // function clickHandlerBoard(e) {
-  //   const selectedPosition = e.target.dataset.column;
 
-  //   if (!selectedPosition) return;
+  function clickHandlerBoard(e) {
+    if (gameOver) return;
+
+    const selectedRow = e.target.dataset.row
+    const selectedColumn = e.target.dataset.column;
+
+    if (!selectedRow && !selectedColumn) return;
+
+    // game.playRound(selectedRow, selectedColumn);
+    const roundOutcome = game.playRound(selectedRow, selectedColumn);
+    checkGameStatus(roundOutcome);
+
+  };  
+  
+  boardDiv.addEventListener('click', clickHandlerBoard);
 
 
-  // };
+  function checkGameStatus(roundOutcome) {
+    if (roundOutcome.status === 'win') {
+      messageContainer.textContent = `Congratulations! ${roundOutcome.winner.name} wins!`;
+      gameOver = true;
+      updateDisplay();
+      return;
+    } else if (roundOutcome.status === 'draw') {
+      messageContainer.textContent = `It's a draw.`;
+      gameOver = true;
+      updateDisplay();
+      return;
+    } else if (roundOutcome.status === 'invalid') {
+      messageContainer.textContent = `Invalid move! Try again.`;
+      return;
+    } else {
+      console.log('continuing');
+      updateDisplay();
+      return;
+    }
+  };
 
   updateDisplay();
-
-
-
-
-
-
-
-
-  // let cellElements = [];
-
-  // const displayBoard = () => {
-  //   const boardState = Gameboard.getBoard();
-  // }
-
-  // for (let i = 0; i < 3; i++) {
-  //   for (let j = 0; j < 3; j++) {
-
-  //     const cellIndex = i * 3 + j;
-
-  //     const cellValue = boardState[i][j].getValue();
-
-  //     const cellElement = cellElements[cellIndex];
-
-  //     if (cellElement) {
-  //       if (cellValue === 1) {
-  //         cellElement.textContent = 'X';
-  //       } else if (cellValue === 2) {
-  //         cellElement.textContent = 'O';
-  //       } else {
-  //         cellElement.textContent = '';
-  //       }
-
-        
-  //     }
-  //   }
-  // }
 
 })();
 

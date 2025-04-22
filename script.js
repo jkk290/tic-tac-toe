@@ -69,7 +69,7 @@ const game = (function() {
   
   let playersContainer = document.querySelector('#player-container');
   let addPlayerForm = document.querySelector('#add-player-form');
-  const players = [];
+  let players = [];
 
   let activePlayer;
   let currentRound;
@@ -93,6 +93,7 @@ const game = (function() {
 
     initializeGame();
     addPlayerForm.style.display = "none";
+    Display.showGameBoard();
     Display.updateDisplay();
 
   });
@@ -100,6 +101,11 @@ const game = (function() {
   function initializeGame()  {
     activePlayer = players[0];
     currentRound = 1;
+  };
+
+  function resetGame() {
+    players = [];
+    addPlayerForm.style.display = "block";
   };
       
   const switchPlayerTurn = () => {
@@ -194,7 +200,9 @@ const game = (function() {
   
   return {
     playRound,
-    getActivePlayer
+    getActivePlayer,
+    initializeGame,
+    resetGame
   };
 
 })();
@@ -241,6 +249,14 @@ const Display = (function() {
     })
   };
 
+  function showGameBoard() {    
+    boardDiv.style.display = 'grid';
+  };
+
+  function hideGameBoard() {
+    boardDiv.style.display =  'none';
+  };
+
 
   function clickHandlerBoard(e) {
     if (gameOver) return;
@@ -258,8 +274,15 @@ const Display = (function() {
   boardDiv.addEventListener('click', clickHandlerBoard);
 
   function clickHandlerReset(e) {
-
+    Gameboard.resetBoard();
+    game.resetGame();
+    gameOver = false;
+    hideGameBoard();
+    resetButton.style.display = 'none';
+    messageText.textContent = '';
   };
+
+  resetButton.addEventListener('click', clickHandlerReset);
 
 
   function checkGameStatus(roundOutcome) {
@@ -284,6 +307,7 @@ const Display = (function() {
   };
 
   return {
+    showGameBoard,
     updateDisplay
   };
 

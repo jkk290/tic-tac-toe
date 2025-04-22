@@ -43,6 +43,17 @@ h1 {
     font-size: 2rem;
 }
 
+#player-container {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: flex-start;
+    justify-self: center;
+}
+
+form input {
+    margin-bottom: 10px;
+}
+
 #board {
     grid-column: 1;
     grid-row: 2;

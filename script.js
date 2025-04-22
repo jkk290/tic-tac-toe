@@ -46,8 +46,22 @@ const Gameboard = (function() {
     const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
     console.log(boardWithCellValues);
   };
+
+  function resetBoard() {
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      for (let j = 0; j < columns; j++) {
+        board[i].push(Cell());
+      }
+    }
+  };
   
-  return { getBoard, placeMark, printBoard };
+  return { 
+    getBoard, 
+    placeMark, 
+    printBoard,
+    resetBoard 
+  };
 })();
 
   
@@ -242,6 +256,10 @@ const Display = (function() {
   };  
   
   boardDiv.addEventListener('click', clickHandlerBoard);
+
+  function clickHandlerReset(e) {
+
+  };
 
 
   function checkGameStatus(roundOutcome) {

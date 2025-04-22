@@ -12,14 +12,16 @@
             <h1>Tic Tac Toe</h1>
         </div>
         <div id="game-container">
-            <div id="message-container"></div>
+            <div id="message-container">                
+                <span id="message-text"></span> <button id="reset-button">Play again?</button>
+            </div>
             <div id="player-container">
                 <form action="" id="add-player-form">
                     <label for="playerOneName">Player One Name:</label><br>
                     <input type="text" id="playerOneName" name="playerOneName"><br>
                     <label for="playerTwoName">Player Two Name:</label><br>
                     <input type="text" id="playerTwoName" name="playerTwoName"><br>
-                    <input type="submit" value="submit" id="submit-button">
+                    <input type="submit" value="Start Game" id="submit-button">
                 </form>
             </div>
             <div id="board"></div>

@@ -186,21 +186,25 @@ const game = (function() {
 })();
 
 const Display = (function() {
-  const gameContainer = document.querySelector('#game-container');
-  const messageContainer = document.querySelector('#message-container');
+  const messageText = document.querySelector('#message-text');
   const boardDiv = document.querySelector('#board');
+  const resetButton = document.querySelector('#reset-button');
   let gameOver = false;
-  
 
   const updateDisplay = () => {
 
     boardDiv.textContent = "";
 
+    if (gameOver === true) {
+      console.log(`attempting to show reset button`)
+      resetButton.style.display = 'block'
+    }
+
     const board = Gameboard.getBoard();
     const currentPlayer = game.getActivePlayer().name;
 
     if (gameOver === false) {
-      messageContainer.textContent = `${currentPlayer}'s turn...`
+      messageText.textContent = `${currentPlayer}'s turn...`
     };
 
     board.forEach((row, rowIndex) => {
@@ -242,17 +246,17 @@ const Display = (function() {
 
   function checkGameStatus(roundOutcome) {
     if (roundOutcome.status === 'win') {
-      messageContainer.textContent = `Congratulations! ${roundOutcome.winner.name} wins!`;
-      gameOver = true;
+      messageText.textContent = `Congratulations! ${roundOutcome.winner.name} wins!`;
+      gameOver = true;      
       updateDisplay();
       return;
     } else if (roundOutcome.status === 'draw') {
-      messageContainer.textContent = `It's a draw.`;
+      messageText.textContent = `It's a draw.`;
       gameOver = true;
       updateDisplay();
       return;
     } else if (roundOutcome.status === 'invalid') {
-      messageContainer.textContent = `Invalid move! Try again.`;
+      messageText.textContent = `Invalid move! Try again.`;
       return;
     } else {
       console.log('continuing');

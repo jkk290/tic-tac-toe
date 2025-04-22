@@ -27,6 +27,12 @@ h1 {
     font-size: 3rem;
 }
 
+#reset-button {
+    display: none;
+    justify-self: center;
+    margin-top: 5px;
+}
+
 #game-container {
     grid-column: 2 / 3;
     grid-row: 2;

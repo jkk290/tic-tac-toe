@@ -51,115 +51,143 @@ const Gameboard = (function() {
   })();
 
   
-  const game = (function(playerOneName = "Player One", playerTwoName = "Player Two") {
+  const game = (function() {
   
+    let playersContainer = document.querySelector('#player-container');
+    let addPlayerForm = document.querySelector('#add-player-form');
+    let gameStart = false;
+
+    addPlayerForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let playerOneName = document.getElementById("playerOneName").value;
+        let playerTwoName = document.getElementById("playerTwoName").value;
+
+        players.push(
+          {
+          name: playerOneName,
+          mark: 1
+          },
+          {
+            name: playerTwoName,
+            mark: 2
+          }
+        );
+
+        gameStart = true;
+
+      });
+
     const players = [
-      {
-        name: playerOneName,
-        mark: 1
-      },
-      {
-        name: playerTwoName,
-        mark: 2
-      }
+      // {
+      //   name: playerOneName,
+      //   mark: 1
+      // },
+      // {
+      //   name: playerTwoName,
+      //   mark: 2
+      // }
     ];
-  
-    let activePlayer = players[0];    
-    let currentRound = 1;
-    
-    const switchPlayerTurn = () => {
-      activePlayer = activePlayer === players[0] ? players[1] : players[0];
-    };
 
-    const getActivePlayer = () => activePlayer;
+    if (gameStart) {
+      let activePlayer = players[0];    
+      let currentRound = 1;
+      
+      const switchPlayerTurn = () => {
+        activePlayer = activePlayer === players[0] ? players[1] : players[0];
+      };
 
-    function checkRows(board, playerMark) {
-      for (let i = 0; i < 3; i++) {
-        if (
-          board[i][0].getValue() === playerMark &&
-          board[i][1].getValue() === playerMark &&
-          board[i][2].getValue() === playerMark
-        ) {
-          return true;
+      const getActivePlayer = () => activePlayer;
+
+      function checkRows(board, playerMark) {
+        for (let i = 0; i < 3; i++) {
+          if (
+            board[i][0].getValue() === playerMark &&
+            board[i][1].getValue() === playerMark &&
+            board[i][2].getValue() === playerMark
+          ) {
+            return true;
+          }
         }
-      }
-      return false;
-    };
-
-    function checkColumns(board, playerMark) {
-      for (let j = 0; j < 3; j++) {
-        if (
-          board[0][j].getValue() === playerMark &&
-          board[1][j].getValue() === playerMark &&
-          board[2][j].getValue() === playerMark
-        ) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    function checkDiagonals(board, playerMark) {
-      if ((
-        board[0][0].getValue() === playerMark && 
-        board[1][1].getValue() === playerMark && 
-        board[2][2].getValue() === playerMark
-      ) || (
-        board[0][2].getValue() === playerMark &&
-        board[1][1].getValue() === playerMark &&
-        board[2][0].getValue() === playerMark 
-      )){
-        return true;
-      }
-      return false;
-    };
-
-    function checkWin(board, playerMark) {
-      if (
-        checkRows(board, playerMark) || 
-        checkColumns(board, playerMark) ||
-        checkDiagonals(board, playerMark)
-      ) {        
-        return true;
-      } else {
         return false;
-      }
-    };
-  
-    const playRound = (row, column) => {
-      const currentPlayerMark = getActivePlayer().mark;
-
-      console.log(
-        `Placing ${getActivePlayer().name}'s mark into position row: ${row} column: ${column}...`
-      );
-
-      const wasMoveInvalid = Gameboard.placeMark(row, column, currentPlayerMark);
-
-      if (wasMoveInvalid) {
-        console.log("Invalid move! Try again.");
-        return { status: 'invalid' };
       };
 
-      if (checkWin(Gameboard.getBoard(), currentPlayerMark)) {
-        Gameboard.printBoard();
-        console.log(`${getActivePlayer().name} wins on round ${currentRound}!`);
-        return { status: 'win', winner: getActivePlayer() };
+      function checkColumns(board, playerMark) {
+        for (let j = 0; j < 3; j++) {
+          if (
+            board[0][j].getValue() === playerMark &&
+            board[1][j].getValue() === playerMark &&
+            board[2][j].getValue() === playerMark
+          ) {
+            return true;
+          }
+        }
+        return false;
       };
 
-      if (currentRound === 9) {
-        Gameboard.printBoard();
-        console.log("It's a draw!");
-        return { status: 'draw'};
-      };    
+      function checkDiagonals(board, playerMark) {
+        if ((
+          board[0][0].getValue() === playerMark && 
+          board[1][1].getValue() === playerMark && 
+          board[2][2].getValue() === playerMark
+        ) || (
+          board[0][2].getValue() === playerMark &&
+          board[1][1].getValue() === playerMark &&
+          board[2][0].getValue() === playerMark 
+        )){
+          return true;
+        }
+        return false;
+      };
 
-      currentRound++;
-      switchPlayerTurn();
-      return { status: 'continue' };
+      function checkWin(board, playerMark) {
+        if (
+          checkRows(board, playerMark) || 
+          checkColumns(board, playerMark) ||
+          checkDiagonals(board, playerMark)
+        ) {        
+          return true;
+        } else {
+          return false;
+        }
+      };
+    
+      const playRound = (row, column) => {
+        const currentPlayerMark = getActivePlayer().mark;
+
+        console.log(
+          `Placing ${getActivePlayer().name}'s mark into position row: ${row} column: ${column}...`
+        );
+
+        const wasMoveInvalid = Gameboard.placeMark(row, column, currentPlayerMark);
+
+        if (wasMoveInvalid) {
+          console.log("Invalid move! Try again.");
+          return { status: 'invalid' };
+        };
+
+        if (checkWin(Gameboard.getBoard(), currentPlayerMark)) {
+          Gameboard.printBoard();
+          console.log(`${getActivePlayer().name} wins on round ${currentRound}!`);
+          return { status: 'win', winner: getActivePlayer() };
+        };
+
+        if (currentRound === 9) {
+          Gameboard.printBoard();
+          console.log("It's a draw!");
+          return { status: 'draw'};
+        };    
+
+        currentRound++;
+        switchPlayerTurn();
+        return { status: 'continue' };
+      };
     };
   
     return {
       playRound,
-      getActivePlayer
+      getActivePlayer,
+      gameStart
     };
   })();
 
